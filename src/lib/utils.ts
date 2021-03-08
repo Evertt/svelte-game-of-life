@@ -15,12 +15,6 @@ export const createRandomGrid = (size: number, fillPercentage: number = Math.ran
   return createGrid(size).map((row) => row.map(() => Math.random() <= fillPercentage));
 }
 
-export const calculateFrameRate = (
-  ticks = 0,
-  startedAt = Date.now(),
-  now = Date.now()
-) => (startedAt ? Math.ceil(ticks / ((now - startedAt) / 1000)) : null);
-
 export const camelToSnakeCase = (s: string) =>
   s.replace(/([A-Z])/g, (x) => `-${x.toLocaleLowerCase()}`);
 

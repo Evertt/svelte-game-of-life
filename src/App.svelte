@@ -10,12 +10,10 @@
 
   export let gridSize: number = 0;
 
-	let rules = "B3/S23"
+  let rules = "B3/S23"
   let mutation = 0.0002
   let isPlaying = false;
-  let rafId: number | undefined;
   let frames = 0;
-  let startedPlayingAt: number | undefined;
   let renderMode: "canvas" | "dom" = "canvas";
 
   $: willLive = willLiveFactory(rules, mutation)
@@ -42,7 +40,7 @@
 
       if (isPlaying) {
         frames++;
-        rafId = requestAnimationFrame(actions.play);
+        requestAnimationFrame(actions.play);
       }
     },
     incrementGridSize() {
@@ -56,16 +54,8 @@
       }
     },
     toggleAutoPlay() {
-      if (isPlaying) {
-        cancelAnimationFrame(rafId);
-        isPlaying = false;
-        frames = 0;
-        startedPlayingAt = undefined;
-        return;
-      }
-      isPlaying = true;
-      startedPlayingAt = Date.now();
-      actions.play();
+      isPlaying = !isPlaying;
+      isPlaying ? actions.play() : frames = 0;
     },
     toggleRenderMode() {
       renderMode = renderMode === "canvas" ? "dom" : "canvas";
@@ -77,7 +67,7 @@
   <h1>Svelte Game of Life</h1>
   <Controls {actions} bind:isPlaying bind:renderMode bind:gridSize bind:rules bind:mutation />
   <svelte:component this={GridComponent} sizeIndex={gridSize} {grid} />
-  <Profiler {frames} {startedPlayingAt} />
+  <Profiler bind:frames {isPlaying} />
 </main>
 
 <style>

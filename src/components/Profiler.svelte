@@ -1,15 +1,17 @@
 <script lang="ts">
-  import { calculateFrameRate, toCssProps } from "lib/utils";
+  import { toCssProps } from "lib/utils";
 
   export let frames = 0;
-  export let startedPlayingAt = Date.now();
+  export let isPlaying = false;
+  let tID, frameRate = 0;
 
-  $: frameRate = calculateFrameRate(frames, startedPlayingAt, Date.now());
-  $: color =
-    frameRate < 24 ? "crimson" : frameRate < 48 ? "orange" : "darkgreen";
-
-  $: opacity = Number(Boolean(frameRate && !isNaN(frameRate)));
-
+  const setFrameRate = () => (frameRate = frames) && (frames = 0)
+  const monitorFrameRate = () => tID = setInterval(setFrameRate, 1000)
+  const stopMonitoring = () => (frameRate = 0) || clearInterval(tID)
+  
+  $: isPlaying ? monitorFrameRate() : stopMonitoring()
+  $: color = frameRate < 24 ? "crimson" : frameRate < 48 ? "orange" : "darkgreen";
+  $: opacity = Number(Boolean(frameRate));
   $: style = toCssProps({ color, opacity });
 </script>
 
